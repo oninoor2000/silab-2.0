@@ -1,0 +1,710 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id                      String    @id @default(cuid())
+    name                    String?   @db.VarChar(100)
+    email                   String    @unique @db.VarChar(255)
+    password                String
+    emailVerified           DateTime?
+    role                    Role      @default(USER)
+    job                     String?   @db.VarChar(100)
+    phone                   String?   @db.VarChar(20)
+    address                 String?   @db.VarChar(255)
+    organization            Organization
+    image                   String?   @db.VarChar(255) @default("/profile-img.png")
+    notificationPreferences String?
+    deleteReason           String?    @db.Text
+    isDeleted              Boolean    @default(false)
+    createdAt              DateTime   @default(now())
+    updatedAt              DateTime   @updatedAt
+
+    accounts              Account[]
+    sessions              Session[]
+    verificationTokens    VerificationToken[]
+    passwordResetRequests PasswordResetRequest[]
+    laboratoryManagers    LaboratoryManager[]
+    researchAuthor        ResearchPortfolioAuthor[]
+    notifications         Notification[]
+    reviews               Review[]
+    reservations          Reservation[]
+    managedReservations   Reservation[] @relation("ReviewBy")
+    uploadedFiles         File[]
+    reservationHistories  ReservationHistory[]
+    articles              Article[]
+    verifiedPayments      Payment[] @relation("PaymentVerifier")
+
+    @@index([email])
+    @@index([role])
+    @@index([organization])
+    @@index([isDeleted])
+    @@index([createdAt])
+    @@map("silab_users")
+}
+
+model Account {
+    id                       String    @id @default(cuid())
+    userId                   String
+    providerType            String
+    providerId              String
+    providerAccountId       String
+    refresh_token           String?
+    access_token            String?
+    accessTokenExpires      DateTime?
+    token_type              String?
+    scope                   String?
+    id_token                String?
+    session_state           String?
+    createdAt               DateTime   @default(now())
+    updatedAt               DateTime   @updatedAt
+    
+    user                    User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    refresh_token_expires_in Int?
+
+    @@unique([providerId, providerAccountId])
+    @@index([userId])
+    @@index([providerType, providerId])
+    @@map("silab_accounts")
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    userId       String
+    expires      DateTime
+    sessionToken String   @unique @db.VarChar(255)
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+    @@index([expires])
+    @@index([sessionToken])
+    @@map("silab_sessions")
+}
+
+model VerificationToken {
+    id        String   @id @default(cuid())
+    token     String   @unique @db.VarChar(255)
+    userId    String
+    expires   DateTime
+    createdAt DateTime @default(now())
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+    @@index([token])
+    @@index([expires])
+    @@map("silab_verification_tokens")
+}
+
+model PasswordResetRequest {
+    id        String   @id @default(cuid())
+    userId    String
+    token     String   @unique @db.VarChar(255)
+    expiresAt DateTime
+    isUsed    Boolean  @default(false)
+    createdAt DateTime @default(now())
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+    @@index([token])
+    @@index([expiresAt])
+    @@index([isUsed])
+    @@map("silab_password_reset_requests")
+}
+
+model Laboratory {
+    id            Int      @id @default(autoincrement())
+    slug          String   @unique @db.VarChar(255)
+    name          String   @db.VarChar(100)
+    description   String   @db.Text
+    coverImg      String   
+    address       String   @db.VarChar(255)
+    area          Decimal  @db.Decimal(10, 2)
+    capacity      Int
+    contactName   String   @db.VarChar(100)
+    contactEmail  String   @db.VarChar(255)
+    contactPhone  String   @db.VarChar(20)
+    floorPlanUrl  String?  @db.VarChar(255)
+    isDeleted     Boolean  @default(false)
+    isDraft       Boolean  @default(true)
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+
+    facilities         Facility[]
+    services           Service[]
+    images             LaboratoryImage[]
+    managers           LaboratoryManager[]
+    researchPortfolios ResearchPortfolio[]
+    reservations       Reservation[]
+    reviews            Review[]
+    operationalHours   OperationalHour[]
+    articles           Article[]
+    addOns             AddOn[]
+
+    @@index([name])
+    @@index([isDeleted, isDraft])
+    @@index([createdAt])
+    @@index([contactEmail])
+    @@map("silab_laboratories")
+}
+
+model Facility {
+    id           Int        @id @default(autoincrement())
+    name         String     @db.VarChar(100)
+    image        String?    @db.VarChar(255)
+    laboratoryId Int
+    createdAt    DateTime   @default(now())
+    updatedAt    DateTime   @updatedAt
+
+    laboratory   Laboratory @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
+
+    @@index([laboratoryId])
+    @@index([name])
+    @@map("silab_facilities")
+}
+
+model Service {
+    id           Int        @id @default(autoincrement())
+    name         String     @db.VarChar(100)
+    description  String?    @db.VarChar(255)
+    price        Decimal    @db.Decimal(10, 2)
+    unit         Unit
+    isRange      Boolean    @default(false)
+    for          ServiceFor @default(ALL)
+    type         ServiceType
+    maxNumber    Int?       @default(0)
+    laboratoryId Int
+    createdAt    DateTime   @default(now())
+    updatedAt    DateTime   @updatedAt
+
+    laboratory   Laboratory @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
+    reservations Reservation[]
+
+    @@index([laboratoryId])
+    @@index([type, for])
+    @@index([price])
+    @@index([name])
+    @@map("silab_services")
+}
+
+model LaboratoryImage {
+    id           Int        @id @default(autoincrement())
+    title        String?    @db.VarChar(255)
+    imageUrl     String     @db.VarChar(255)
+    laboratoryId Int
+    createdAt    DateTime   @default(now())
+    updatedAt    DateTime   @updatedAt
+
+    laboratory   Laboratory @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
+
+    @@index([laboratoryId])
+    @@map("silab_laboratory_images")
+}
+
+model LaboratoryManager {
+    id           Int        @id @default(autoincrement())
+    userId       String
+    laboratoryId Int
+    createdAt    DateTime   @default(now())
+    updatedAt    DateTime   @updatedAt
+
+    user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    laboratory   Laboratory @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, laboratoryId])
+    @@index([userId])
+    @@index([laboratoryId])
+    @@map("silab_laboratory_managers")
+}
+
+model ResearchPortfolio {
+    id                  Int       @id @default(autoincrement())
+    coverImg            String    @db.VarChar
+    title               String    @db.VarChar
+    slug                String    @unique @db.VarChar
+    abstract            String    @db.VarChar
+    content             String?   @db.Text
+    publishedDate       DateTime?
+    researchLocation    String    @db.VarChar(255)
+    researchDate        DateTime
+    correspondenceEmail String    @db.VarChar(255)
+    studyProgram        String    @db.VarChar(100)
+    laboratoryId        Int
+    doi                 String?   @db.VarChar(100)
+    type                PortfolioType
+    viewCount           Int?     
+    createdAt           DateTime  @default(now())
+    updatedAt           DateTime  @updatedAt
+
+    laboratory          Laboratory @relation(fields: [laboratoryId], references: [id], onDelete: Restrict)
+    
+    authors             ResearchPortfolioAuthor[]
+    files               File[]    @relation("FileResearchPortfolio")
+    categories          CategoryResearch[]
+
+    @@index([laboratoryId])
+    @@index([slug])
+    @@index([type])
+    @@index([publishedDate])
+    @@index([studyProgram])
+    @@index([createdAt])
+    @@map("silab_research_portfolios")
+}
+
+model CategoryResearch {
+    id            Int               @id @default(autoincrement())
+    articleId     Int
+    categoryId    Int              
+    createdAt     DateTime          @default(now())
+    updatedAt     DateTime          @updatedAt
+
+    research      ResearchPortfolio @relation(fields: [articleId], references: [id], onDelete: Cascade)
+    category      Category          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+    @@index([articleId])
+    @@index([categoryId])
+    @@map("silab_category_researchs")
+}
+
+model ResearchPortfolioAuthor {
+    id                  Int              @id @default(autoincrement())
+    researchPortfolioId Int
+    userId              String
+    role                AuthorRole
+    orderNumber         Int
+    createdAt          DateTime         @default(now())
+    updatedAt          DateTime         @updatedAt
+
+    researchPortfolio   ResearchPortfolio @relation(fields: [researchPortfolioId], references: [id], onDelete: Cascade)
+    user                User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+    @@index([researchPortfolioId])
+    @@index([userId])
+    @@index([role])
+    @@index([orderNumber])
+    @@map("silab_research_portfolio_authors")
+}
+
+model Article {
+    id            Int        @id @default(autoincrement())
+    coverImg      String     @db.VarChar
+    title         String     @db.VarChar
+    slug          String     @unique @db.VarChar
+    summary       String?    @db.VarChar
+    content       String?    @db.Text
+    author        String           
+    viewCount     Int?              
+    publishedDate DateTime?
+    laboratoryId  Int
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime   @updatedAt
+
+    laboratory    Laboratory @relation(fields: [laboratoryId], references: [id], onDelete: Restrict)
+    user          User       @relation(fields: [author], references: [id], onDelete: Cascade)
+
+    files         File[]     @relation("FileArticle")
+    categories    CategoryArticle[]
+
+    @@index([laboratoryId])
+    @@index([slug])
+    @@index([author])
+    @@index([publishedDate])
+    @@index([createdAt])
+    @@map("silab_articles")
+}
+
+model CategoryArticle {
+    id            Int        @id @default(autoincrement())
+    articleId     Int
+    categoryId    Int              
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime   @updatedAt
+
+    article       Article    @relation(fields: [articleId], references: [id], onDelete: Cascade)
+    category      Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+    @@index([articleId])
+    @@index([categoryId])
+    @@map("silab_category_articles")
+}
+
+model Reservation {
+    id                String            @id @default(uuid())
+    userId            String
+    laboratoryId      Int
+    serviceId         Int
+    startDate         DateTime
+    endDate           DateTime
+    startTime         DateTime?
+    endTime           DateTime?
+    quantity          Int               @default(1)
+    status            ReservationStatus
+    type              ServiceType
+    unit              Unit
+    totalPrice        Decimal           @db.Decimal(10, 2)
+    notes             String?           @db.Text
+    reviewed          Boolean           @default(false)
+    reviewedById      String?
+    reviewedAt        DateTime?
+    rejectedReason    String?           @db.Text
+    cancelationReason String?           @db.Text
+    createdAt         DateTime          @default(now())
+    updatedAt         DateTime          @updatedAt
+
+    user              User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+    laboratory        Laboratory        @relation(fields: [laboratoryId], references: [id], onDelete: Restrict)
+    service           Service           @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+    reviewedBy        User?             @relation("ReviewBy", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+    reviews           Review[]
+    notifications     Notification[]
+    reservationAddOns ReservationAddOn[]
+    payments          Payment[]
+    history           ReservationHistory[]
+
+    @@index([userId])
+    @@index([laboratoryId])
+    @@index([serviceId])
+    @@index([status])
+    @@index([startDate, endDate])
+    @@index([createdAt])
+    @@index([reviewedById])
+    @@index([reviewed])
+    @@map("silab_reservations")
+}
+
+model AddOn {
+    id               Int               @id @default(autoincrement())
+    name             String            @db.VarChar(100)
+    description      String?           @db.Text
+    price            Decimal           @db.Decimal(10, 2)
+    laboratoryId     Int
+    createdAt        DateTime          @default(now())
+    updatedAt        DateTime          @updatedAt
+    
+    laboratory       Laboratory        @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
+    reservationAddOns ReservationAddOn[]
+
+    @@index([laboratoryId])
+    @@index([name])
+    @@index([price])
+    @@map("silab_add_ons")
+}
+
+model ReservationAddOn {
+    id            Int         @id @default(autoincrement())
+    reservationId String
+    addOnId       Int
+    quantity      Int
+    price         Decimal     @db.Decimal(10, 2)
+    reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+    addOn         AddOn       @relation(fields: [addOnId], references: [id], onDelete: Restrict)
+
+    @@unique([reservationId, addOnId])
+    @@index([reservationId])
+    @@index([addOnId])
+    @@index([price])
+    @@map("silab_reservation_add_ons")
+}
+
+model Payment {
+    id                String          @id @default(cuid())
+    reservationId     String
+    amount            Decimal         @db.Decimal(10, 2)
+    status            PaymentStatus
+    paymentMethod     PaymentMethod
+    paymentDate       DateTime?
+    dueDate           DateTime
+    verificationDate  DateTime?
+    verifiedBy        String?
+    transactionId     String?         @unique
+    paymentProofUrl   String?         @db.Text
+    notes             String?         @db.Text
+    rejectionReason   String?         @db.Text
+    failedReason      String?         @db.Text
+    refundStatus      RefundStatus?
+    refundDate        DateTime?
+    refundAmount      Decimal?        @db.Decimal(10, 2)
+    createdAt         DateTime        @default(now())
+    updatedAt         DateTime        @updatedAt
+
+    reservation       Reservation     @relation(fields: [reservationId], references: [id], onDelete: Restrict)
+    verifier         User?           @relation("PaymentVerifier", fields: [verifiedBy], references: [id], onDelete: SetNull)
+    files            File[]          @relation("FilePayment")
+
+    @@index([reservationId])
+    @@index([status])
+    @@index([paymentMethod])
+    @@index([dueDate])
+    @@index([paymentDate])
+    @@index([status, paymentMethod])
+    @@index([verifiedBy])
+    @@index([refundStatus])
+    @@index([transactionId])
+    @@map("silab_payments")
+}
+
+model Review {
+    id            Int               @id @default(autoincrement())
+    userId        String
+    laboratoryId  Int
+    reservationId String
+    rating        Int
+    title         String            @db.VarChar(255)
+    description   String            @db.Text
+    reviewDate    DateTime
+    isAnonymous   Boolean           @default(false)
+    createdAt     DateTime          @default(now())
+    updatedAt     DateTime          @updatedAt
+
+    user          User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+    laboratory    Laboratory        @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
+    reservation   Reservation       @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+    @@index([laboratoryId])
+    @@index([reservationId])
+    @@index([rating])
+    @@index([reviewDate])
+    @@index([isAnonymous])
+    @@map("silab_reviews")
+}
+
+model Notification {
+    id            Int               @id @default(autoincrement())
+    userId        String
+    type          NotificationType
+    message       String            @db.Text
+    isRead        Boolean           @default(false)
+    createdAt     DateTime          @default(now())
+    reservationId String?
+    
+    user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+    reservation   Reservation?      @relation(fields: [reservationId], references: [id], onDelete: SetNull)
+
+    @@index([userId])
+    @@index([reservationId])
+    @@index([type])
+    @@index([isRead])
+    @@index([createdAt])
+    @@map("silab_notifications")
+}
+
+model OperationalHour {
+    id             Int              @id @default(autoincrement())
+    laboratoryId   Int
+    dayOfWeek      DayOfWeek
+    startTime      DateTime
+    endTime        DateTime
+    breakStartTime DateTime?
+    breakEndTime   DateTime?
+    createdAt      DateTime         @default(now())
+    updatedAt      DateTime         @updatedAt
+
+    laboratory     Laboratory       @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
+
+    @@index([laboratoryId])
+    @@index([dayOfWeek])
+    @@index([startTime, endTime])
+    @@map("silab_operational_hours")
+}
+
+model ReservationHistory {
+    id            Int               @id @default(autoincrement())
+    reservationId String
+    changeType    ChangeType
+    oldData       Json
+    newData       Json
+    changedById   String
+    changedAt     DateTime
+    
+    reservation   Reservation       @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+    changedBy     User             @relation(fields: [changedById], references: [id], onDelete: Restrict)
+
+    @@index([reservationId])
+    @@index([changedById])
+    @@index([changeType])
+    @@index([changedAt])
+    @@map("silab_reservation_histories")
+}
+
+model Category {
+    id            Int               @id @default(autoincrement())
+    for           CategoryFor
+    name          String            @db.VarChar(255)
+    createdAt     DateTime          @default(now())
+    updatedAt     DateTime          @updatedAt
+
+    articles      CategoryArticle[]
+    researchs     CategoryResearch[]
+    
+    @@index([for])
+    @@index([name])
+    @@map("silab_category")
+}
+
+model File {
+    id                  Int               @id @default(autoincrement())
+    fileName            String            @db.VarChar(255)
+    fileType            String            @db.VarChar(50)
+    fileUrl             String            @db.VarChar(255)
+    uploadedById        String
+    uploadedAt          DateTime          @default(now())
+    researchPortfolioId Int?
+    paymentId           String?
+    articleId           Int?
+    
+    uploadedBy          User              @relation(fields: [uploadedById], references: [id], onDelete: Restrict)
+    researchPortfolio   ResearchPortfolio? @relation("FileResearchPortfolio", fields: [researchPortfolioId], references: [id], onDelete: SetNull)
+    payment             Payment?           @relation("FilePayment", fields: [paymentId], references: [id], onDelete: SetNull)
+    article             Article?           @relation("FileArticle", fields: [articleId], references: [id], onDelete: SetNull)
+
+    @@index([uploadedById])
+    @@index([researchPortfolioId])
+    @@index([paymentId])
+    @@index([articleId])
+    @@index([fileType])
+    @@index([uploadedAt])
+    @@map("silab_files")
+}
+
+enum Role {
+    USER
+    ADMIN
+    KEPALA_LAB
+    TEKNISI
+    KEPALA_JURUSAN
+}
+
+enum Organization {
+    POLIJE
+    PUBLIC
+}
+
+enum ServiceFor {
+    INTERNAL
+    EKSTERNAL
+    INTERNAL_JURKES
+    STUDENT
+    ALL
+}
+
+enum ServiceType {
+    RENT
+    LEND
+    SERVICE
+    TRAINING
+}
+
+enum Unit {
+    PER_HOUR
+    PER_DAY
+    PER_3_MONTHS
+    PER_1_7_DAYS
+    PER_PACKAGE
+    PER_WEEK
+    PER_USAGE
+    PER_PC_DAY
+    PER_MONTH
+    PER_ANALYSIS
+    PER_MOUSE
+    PER_SAMPLE
+    PER_ANIMAL
+    PER_PERSON
+    PER_14_MEETINGS
+    PER_28_MEETINGS
+    PER_7_MEETINGS
+    PER_1_METHOD_3_MEETINGS
+    PER_12_MEETINGS
+    PER_STUDENT
+    PER_ACTIVITY_DAY_PERSON
+    PER_PERSON_DAY
+    STARTING_FROM
+    PER_DESIGN_METER
+    PER_APPLICATION
+    PER_FORM
+    PER_REPORT
+    PER_RESPONDENT
+    PER_PERSON_MONTH
+    PER_PERSON_2_HOURS
+    PER_VIDEO
+    PER_MATERIAL
+    PER_AD
+    PER_PROTOTYPE
+    PER_DESIGN
+}
+
+enum PortfolioType {
+    RESEARCH
+    PROJECT
+    COMMUNITY_SERVICE
+}
+
+enum AuthorRole {
+    PRIMARY
+    CO_AUTHOR
+    CONTRIBUTOR
+}
+
+enum ReservationStatus {
+    PENDING
+    CONFIRMED
+    CANCELED
+    COMPLETED
+    REJECTED
+}
+
+enum PaymentStatus {
+    PENDING
+    AWAITING_VERIFICATION
+    COMPLETED
+    REJECTED
+    FAILED
+    REFUNDED
+    EXPIRED
+}
+
+enum NotificationType {
+    INFO
+    WARNING
+    ALERT
+}
+
+enum DayOfWeek {
+    MONDAY
+    TUESDAY
+    WEDNESDAY
+    THURSDAY
+    FRIDAY
+    SATURDAY
+    SUNDAY
+}
+
+enum ChangeType {
+    CREATE
+    UPDATE
+    DELETE
+}
+
+enum CategoryFor {
+    RESEARCH
+    ARTICLE
+}
+
+enum PaymentMethod {
+    BANK_TRANSFER
+    CASH
+    CREDIT_CARD
+    E_WALLET
+}
+
+enum RefundStatus {
+    PENDING
+    PROCESSED
+    COMPLETED
+    REJECTED
+}
