@@ -9,6 +9,9 @@ const config = {
   images: {
     remotePatterns: [{ hostname: "utfs.io" }],
   },
+  experimental: {
+    ppr: true,
+  },
 };
 
 export default config;
