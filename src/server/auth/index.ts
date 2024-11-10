@@ -1,10 +1,10 @@
-import NextAuth from "next-auth";
 import { cache } from "react";
+import NextAuth from "next-auth";
 
+import { db } from "../db";
 import { authConfig } from "./config";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { db } from "../db";
-import { Adapter } from "next-auth/adapters";
+import type { Adapter } from "next-auth/adapters";
 
 const {
   auth: uncachedAuth,

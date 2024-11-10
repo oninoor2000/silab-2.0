@@ -1,11 +1,9 @@
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { Role } from "@prisma/client";
-import { type DefaultSession, type NextAuthConfig } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-
 import { db } from "~/server/db";
+import type { Role } from "@prisma/client";
 import { loginFormSchema } from "~/zodSchema";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { type DefaultSession, type NextAuthConfig } from "next-auth";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
