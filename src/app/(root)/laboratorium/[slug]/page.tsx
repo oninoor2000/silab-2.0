@@ -36,7 +36,7 @@ import {
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { getNameInitials } from "~/hooks/get-initial-name";
-import { ChevronLeft, CircleCheck, Share2, Star } from "lucide-react";
+import { ChevronLeft, CircleCheck, Star } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
 import ShareDropdown from "~/components/root/share-dropdown";

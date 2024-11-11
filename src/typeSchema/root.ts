@@ -25,6 +25,7 @@ export interface SortSelectProps {
   query?: string;
   page?: number;
   baseActionUrl: string;
+  defaultSort: string;
   options: { value: string; label: string }[];
 }
 

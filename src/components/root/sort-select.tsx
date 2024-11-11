@@ -13,8 +13,9 @@ import {
 const SortSelect = ({
   sort,
   query,
-  baseActionUrl,
   options,
+  defaultSort,
+  baseActionUrl,
 }: SortSelectProps) => {
   const formRef = React.useRef<HTMLFormElement>(null);
 
@@ -39,7 +40,7 @@ const SortSelect = ({
       <Select
         name="sort"
         onValueChange={handleValueChange}
-        defaultValue={sort ?? "a-z"}
+        defaultValue={sort ?? defaultSort}
       >
         <SelectTrigger className="w-full py-5">
           <SelectValue placeholder="Urutkan" />

@@ -33,7 +33,7 @@ import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import SortSelect from "~/components/root/sort-select";
 import SearchForm from "~/components/root/search-form";
 
-const Laboratory = async (props: {
+const Laboratories = async (props: {
   params: Params;
   searchParams: SearchParams;
 }) => {
@@ -129,6 +129,7 @@ const Laboratory = async (props: {
             <SortSelect
               sort={sort}
               query={query}
+              defaultSort="a-z"
               baseActionUrl="laboratorium"
               options={[
                 { value: "widest", label: "Ruangan terbesar" },
@@ -182,7 +183,7 @@ const Laboratory = async (props: {
   );
 };
 
-export default Laboratory;
+export default Laboratories;
 
 function ContentCard({ lab }: { lab: laboratory }) {
   return (

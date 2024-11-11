@@ -46,7 +46,7 @@ const SearchForm = ({
         <QueryResetButton
           currentPage={page}
           sort={sort}
-          baseActionUrl="laboratorium"
+          baseActionUrl={baseActionUrl}
         />
       )}
     </form>
