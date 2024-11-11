@@ -184,7 +184,7 @@ function ContentCard({ lab }: { lab: laboratory }) {
     >
       <CardContent className="flex flex-col justify-between px-0">
         <div className="relative h-96 w-full overflow-hidden lg:h-[26rem]">
-          <Link href={`/laboratorium/${lab.id ?? ""}`}>
+          <Link href={`/laboratorium/${lab.slug}`}>
             <Image
               src={lab.coverImg ?? "/hero.jpg"}
               alt={`${lab.name ?? "Laboratory"} image`}

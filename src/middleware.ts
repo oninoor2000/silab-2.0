@@ -20,10 +20,26 @@ export default auth((req) => {
   const isApiAuthRoute = apiAuthPrefix.some((prefix) =>
     nextUrl.pathname.startsWith(prefix),
   );
-  // const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-  const isPublicRoute = publicRoutes.some((publicRoute) =>
-    nextUrl.pathname.endsWith(publicRoute),
-  );
+
+  // Check if the current path matches any public route or is a child of a public route
+  const isPublicRoute = publicRoutes.some((route) => {
+    // Exact match
+    if (nextUrl.pathname === route) return true;
+
+    // Check if it's a dynamic route (e.g., /laboratorium/[slug])
+    // Split both paths into segments
+    const routeSegments = route.split("/").filter(Boolean);
+    const pathSegments = nextUrl.pathname.split("/").filter(Boolean);
+
+    // If the current path has fewer segments than the route, it can't be a match
+    if (routeSegments.length > pathSegments.length) return false;
+
+    // Check if all segments of the route match the beginning of the path
+    return routeSegments.every(
+      (segment, index) => segment === pathSegments[index],
+    );
+  });
+
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
   if (isApiAuthRoute) {
@@ -47,18 +63,27 @@ export default auth((req) => {
     return NextResponse.rewrite(new URL("/", req.url));
   }
 
-  const isStaffRestrictedRoute = staffRestrictedRoutes.includes(
-    nextUrl.pathname,
-  );
+  const isStaffRestrictedRoute = staffRestrictedRoutes.some((route) => {
+    // Exact match
+    if (nextUrl.pathname === route) return true;
+    // Check if the current path starts with a restricted route path
+    // This handles cases like "/dashboard/edit-lab/123"
+    return nextUrl.pathname.startsWith(route);
+  });
+
   if (isStaffRestrictedRoute && userSession?.user?.role === "USER") {
     return Response.redirect(
       new URL("/dashboard/user/pemesanan-saya", nextUrl),
     );
   }
 
-  const isAdminRestrictedRoute = adminRestrictedRoutes.includes(
-    nextUrl.pathname,
-  );
+  const isAdminRestrictedRoute = adminRestrictedRoutes.some((route) => {
+    // Exact match
+    if (nextUrl.pathname === route) return true;
+    // Check if the current path starts with a restricted route path
+    return nextUrl.pathname.startsWith(route);
+  });
+
   if (isAdminRestrictedRoute && userSession?.user?.role !== "ADMIN") {
     return Response.redirect(new URL("/dashboard", nextUrl));
   }
@@ -68,13 +93,7 @@ export default auth((req) => {
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
     "/(api|trpc)(.*)",
-
-    // "/((?!.+\\.[\\w]+$|_next).*)",
-    // "/",
-    // "/(api|trpc)(.*)",
   ],
 };
