@@ -1,22 +1,21 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Button } from "~/components/ui/button";
-import { Share2 } from "lucide-react";
+import type { ShareDropdownProps } from "~/typeSchema/root";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+
 import { toast } from "sonner";
 import { cn } from "~/lib/utils";
+import { Share2 } from "lucide-react";
+import { Button } from "~/components/ui/button";
 
-interface ShareDropdownProps {
-  className?: string;
-}
-
-export default function ShareDropdown({ className }: ShareDropdownProps) {
+export default function ShareDropdown({ className, text }: ShareDropdownProps) {
   const pathname = usePathname();
 
   const copyToClipboard = async () => {
@@ -39,7 +38,6 @@ export default function ShareDropdown({ className }: ShareDropdownProps) {
   const shareToSocialMedia = (platform: string) => {
     try {
       const url = encodeURIComponent(`${window.location.origin}${pathname}`);
-      const text = encodeURIComponent("Lihat penelitian ini di SILAB: ");
       let shareUrl = "";
 
       switch (platform) {

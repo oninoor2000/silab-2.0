@@ -240,7 +240,7 @@ const LaboratoryDetail = async (props: {
           </h2>
         </div>
 
-        <ShareDropdown className="!flex" />
+        <ShareDropdown className="!flex" text={laboratory.name} />
       </section>
 
       {/* Gallery */}

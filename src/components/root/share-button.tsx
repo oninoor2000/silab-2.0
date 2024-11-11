@@ -12,7 +12,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
-export default function ShareButtons() {
+export default function ShareButtons({ text }: { text: string }) {
   const [isCopied, setIsCopied] = useState(false);
   const pathname = usePathname();
 
@@ -36,7 +36,6 @@ export default function ShareButtons() {
 
   const shareToSocialMedia = (platform: string) => {
     const url = encodeURIComponent(`${window.location.origin}${pathname}`);
-    const text = encodeURIComponent("Lihat berita ini di SILAB: ");
     let shareUrl = "";
 
     switch (platform) {

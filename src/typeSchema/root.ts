@@ -27,3 +27,8 @@ export interface SortSelectProps {
   baseActionUrl: string;
   options: { value: string; label: string }[];
 }
+
+export interface ShareDropdownProps {
+  className?: string;
+  text: string;
+}
