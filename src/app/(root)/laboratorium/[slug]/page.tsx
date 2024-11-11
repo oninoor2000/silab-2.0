@@ -203,9 +203,7 @@ const LaboratoryDetail = async (props: {
             </Link>
           </Button>
 
-          <Button variant="outline" size="icon" className="md:hidden">
-            <Share2 className="h-4 w-4" />
-          </Button>
+          <ShareDropdown text={laboratory.name} />
         </div>
 
         <div className="flex w-full items-center justify-center md:justify-end">
@@ -232,7 +230,7 @@ const LaboratoryDetail = async (props: {
       {/* Title */}
       <section className="my-10 flex items-center justify-between gap-20 px-5 lg:px-20">
         <div className="w-full lg:w-5/6">
-          <h1 className="text-center text-3xl md:text-left md:text-4xl lg:text-5xl">
+          <h1 className="text-center text-2xl md:text-left md:text-3xl lg:text-5xl">
             {laboratory?.name}
           </h1>
           <h2 className="mt-5 text-center text-muted-foreground md:text-left lg:text-lg">
@@ -240,7 +238,7 @@ const LaboratoryDetail = async (props: {
           </h2>
         </div>
 
-        <ShareDropdown className="!flex" text={laboratory.name} />
+        <ShareDropdown className="hidden md:!flex" text={laboratory.name} />
       </section>
 
       {/* Gallery */}

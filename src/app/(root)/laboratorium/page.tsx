@@ -61,6 +61,8 @@ const Laboratory = async (props: {
         },
         where: getWhereClause(query),
         orderBy: getOrderByPrisma(sort),
+        take: itemsPerPage,
+        skip: (currentPage - 1) * itemsPerPage,
       });
 
       const labs = res.map((lab) => ({
@@ -75,12 +77,20 @@ const Laboratory = async (props: {
     { revalidate: 3600, tags: ["laboratories"] },
   );
 
-  const laboratories = await getLaboratories();
+  const getCountAllLabs = unstable_cache(
+    async () => {
+      const count = await db.laboratory.count({
+        where: getWhereClause(query),
+      });
 
-  const paginatedLabs = laboratories.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
+      return count;
+    },
+    ["laboratories-count", query ?? ""],
+    { revalidate: 3600, tags: ["laboratories-count"] },
   );
+
+  const laboratories = await getLaboratories();
+  const countAllLabs = await getCountAllLabs();
 
   return (
     <>
@@ -140,7 +150,7 @@ const Laboratory = async (props: {
 
           <Separator className="my-10 w-full" />
 
-          {paginatedLabs.length === 0 ? (
+          {laboratories.length === 0 ? (
             <p className="text-center text-muted-foreground">
               Tidak ada laboratorium yang sesuai dengan pencarian Anda
             </p>
@@ -151,14 +161,14 @@ const Laboratory = async (props: {
                   "grid grid-cols-1 gap-20 md:grid-cols-2 md:gap-x-10 md:gap-y-20 lg:grid-cols-3"
                 }
               >
-                {paginatedLabs.map((lab) => (
+                {laboratories.map((lab) => (
                   <ContentCard key={lab.id} lab={lab} />
                 ))}
               </div>
               <div className="mt-20 flex justify-center">
                 <SitePagination
                   currentPage={currentPage}
-                  totalPages={Math.ceil(laboratories.length / itemsPerPage)}
+                  totalPages={Math.ceil(countAllLabs / itemsPerPage)}
                   baseActionUrl="laboratorium"
                   query={query}
                   sort={sort}
