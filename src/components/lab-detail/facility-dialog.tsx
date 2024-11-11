@@ -2,6 +2,9 @@
 
 import Image from "next/image";
 import { useState } from "react";
+
+import type { Facility } from "@prisma/client";
+
 import {
   Dialog,
   DialogContent,
@@ -10,7 +13,6 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import { Button } from "~/components/ui/button";
-import { Facility } from "@prisma/client";
 
 export default function FacilityDialogTrigger({
   facilities,
