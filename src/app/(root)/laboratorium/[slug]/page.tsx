@@ -104,6 +104,27 @@ export async function generateStaticParams() {
   }));
 }
 
+export async function generateMetadata(props: {
+  params: Params;
+  searchParams: SearchParams;
+}) {
+  const params = await props.params;
+  const lab = await db.laboratory.findUnique({
+    where: { slug: params.slug },
+    select: {
+      name: true,
+      coverImg: true,
+    },
+  });
+
+  return {
+    title: lab?.name,
+    openGraph: {
+      images: [lab?.coverImg],
+    },
+  };
+}
+
 const LaboratoryDetail = async (props: {
   params: Params;
   searchParams: SearchParams;

@@ -23,11 +23,11 @@ const QueryResetButton = ({
 
   return (
     <Button
+      asChild
       type="reset"
       size="default"
       onClick={reset}
       className="h-[42px] w-[42px]"
-      asChild
     >
       <Link
         href={`/${baseActionUrl}${params.toString() ? `?${params.toString()}` : ""}`}

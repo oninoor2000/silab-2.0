@@ -4,7 +4,9 @@ import Image from "next/image";
 import { db } from "~/server/db";
 import { Prisma } from "@prisma/client";
 import { unstable_cache } from "next/cache";
+
 import type { Params, SearchParams } from "~/typeSchema/global";
+import type { laboratory } from "~/typeSchema/laboratory-page-types";
 
 import {
   Tooltip,
@@ -26,13 +28,10 @@ import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { ImageIcon, Maximize, Users } from "lucide-react";
 import { SitePagination } from "~/components/root/pagination";
-import type { laboratory } from "~/typeSchema/laboratory-page-types";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
 
 import SortSelect from "~/components/root/sort-select";
 import SearchForm from "~/components/root/search-form";
-
-export const experimental_ppr = true;
 
 const Laboratory = async (props: {
   params: Params;

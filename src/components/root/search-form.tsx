@@ -41,6 +41,7 @@ const SearchForm = ({
       <Button type="submit" size="default" className="h-[42px] w-[42px]">
         <Search className="h-5 w-5 stroke-current" />
       </Button>
+
       {query && (
         <QueryResetButton
           currentPage={page}
