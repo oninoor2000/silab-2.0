@@ -5,6 +5,8 @@ import { Inter } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import { Toaster } from "~/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "~/components/ui/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -34,6 +36,8 @@ export default function RootLayout({
           >
             {children}
             <Toaster />
+            <Analytics />
+            <SpeedInsights />
           </ThemeProvider>
         </TRPCReactProvider>
       </body>
