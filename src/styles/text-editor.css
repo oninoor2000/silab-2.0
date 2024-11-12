@@ -1,0 +1,39 @@
+h1.nv-font-title {
+  @apply !my-4 !text-3xl !font-bold;
+}
+
+h2.nv-font-title {
+  @apply !my-4 !text-2xl !font-bold;
+}
+
+h3.nv-font-title {
+  @apply !my-4 !text-xl !font-bold;
+}
+
+p.nv-font-p {
+  @apply !my-4 !text-lg;
+}
+
+p.nv-font-p:empty {
+  @apply !my-4 !h-4 !text-lg;
+}
+
+.nv-font-task-item > div > p.nv-font-p {
+  @apply !my-0 !text-lg;
+}
+
+.nv-list > li:first-child {
+  @apply !my-0 !mb-5 !mt-8 !text-lg;
+}
+
+.nv-list > li {
+  @apply mb-5 !text-lg;
+}
+
+blockquote {
+  @apply my-4 border-s-4 border-gray-300 bg-gray-50 p-4 dark:border-gray-500 dark:bg-gray-800;
+}
+
+blockquote > p {
+  @apply text-xl font-medium italic leading-relaxed text-gray-900 dark:text-white;
+}

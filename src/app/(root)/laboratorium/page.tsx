@@ -30,6 +30,7 @@ import { ImageIcon, Maximize, Users } from "lucide-react";
 import { SitePagination } from "~/components/root/pagination";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
 
+import Footer from "~/components/root/footer";
 import SortSelect from "~/components/root/sort-select";
 import SearchForm from "~/components/root/search-form";
 
@@ -178,6 +179,8 @@ const Laboratories = async (props: {
             </>
           )}
         </div>
+
+        <Footer />
       </main>
     </>
   );

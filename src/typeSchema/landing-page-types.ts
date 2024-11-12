@@ -1,11 +1,11 @@
 import type { LucideProps } from "lucide-react";
 
-export interface NavbarItem {
+export type NavbarItem = {
   name: string;
   url: string;
-}
+};
 
-export interface testimonialItemTypes {
+export type testimonialItemTypes = {
   icon: React.ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
   >;
@@ -15,4 +15,4 @@ export interface testimonialItemTypes {
   desc: string;
   reviewer: string;
   occupancy: string;
-}
+};

@@ -64,46 +64,46 @@ export type laboratoryReviewType = {
   updatedAt: Date;
 };
 
-export interface RatingCounts {
+export type RatingCounts = {
   1: number;
   2: number;
   3: number;
   4: number;
   5: number;
-}
+};
 
-export interface RatingPercentages {
+export type RatingPercentages = {
   1: number;
   2: number;
   3: number;
   4: number;
   5: number;
-}
+};
 
-export interface ReviewStatistics {
+export type ReviewStatistics = {
   averageRating: number;
   totalReviews: number;
   percentages: RatingPercentages;
   ratingCount: RatingCounts;
-}
+};
 
-export interface LabDetailGalleryProps {
+export type LabDetailGalleryProps = {
   images: LaboratoryImage[];
-}
+};
 
-export interface LabDetailFacilityProps {
+export type LabDetailFacilityProps = {
   id: number;
   name: string;
   image: string;
   createdAt: string;
   updatedAt: string;
   laboratoryId: number;
-}
+};
 
 export interface ServiceWithNumberPrice extends Omit<Service, "price"> {
   price: number;
 }
 
-export interface LabDetailServiceCarouselProps {
+export type LabDetailServiceCarouselProps = {
   services: ServiceWithNumberPrice[];
-}
+};

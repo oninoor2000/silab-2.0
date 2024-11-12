@@ -21,6 +21,7 @@ import { Separator } from "~/components/ui/separator";
 import { Card, CardContent } from "~/components/ui/card";
 import { SitePagination } from "~/components/root/pagination";
 
+import Footer from "~/components/root/footer";
 import SearchForm from "~/components/root/search-form";
 import SortSelect from "~/components/root/sort-select";
 import formatLocalDate from "~/hooks/get-local-date-format";
@@ -110,7 +111,7 @@ const Articles = async (props: {
       return articleHeadlines;
     },
     ["articleHeadlines", query ?? "", sort ?? "", currentPage.toString()],
-    { revalidate: 3600, tags: ["articleHeadlines"] },
+    { revalidate: 3600 * 24, tags: ["articleHeadlines"] },
   );
 
   const articles = await getArticles();
@@ -232,6 +233,8 @@ const Articles = async (props: {
           )}
         </div>
       </section>
+
+      <Footer />
     </>
   );
 };

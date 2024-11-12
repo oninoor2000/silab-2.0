@@ -39,6 +39,7 @@ import { getNameInitials } from "~/hooks/get-initial-name";
 import { ChevronLeft, CircleCheck, Star } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
+import Footer from "~/components/root/footer";
 import ShareDropdown from "~/components/root/share-dropdown";
 import LabDetailGallery from "~/components/lab-detail/gallery";
 import LabDetailServiceCarousel from "~/components/lab-detail/service";
@@ -571,6 +572,8 @@ const LaboratoryDetail = async (props: {
         </div>
       </section>
       {/* Testimonial Seciton */}
+
+      <Footer />
     </>
   );
 };
