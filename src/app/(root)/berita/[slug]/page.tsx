@@ -20,10 +20,10 @@ import { ChevronLeft } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 
+import Footer from "~/components/root/footer";
 import ShareButtons from "~/components/root/share-button";
 import ShareDropdown from "~/components/root/share-dropdown";
 import RenderJsonToHtmlContent from "~/components/root/render-json-to-html-content";
-import Footer from "~/components/root/footer";
 
 export const revalidate = 60;
 

@@ -22,12 +22,12 @@ p.nv-font-p:empty {
   @apply !my-0 !text-lg;
 }
 
-.nv-list > li:first-child {
-  @apply !my-0 !mb-5 !mt-8 !text-lg;
-}
-
 .nv-list > li {
   @apply mb-5 !text-lg;
+}
+
+.nv-list > li:first-child {
+  @apply !my-0 !mb-5 !mt-8 !text-lg;
 }
 
 blockquote {
