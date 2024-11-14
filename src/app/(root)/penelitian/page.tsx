@@ -18,8 +18,8 @@ import {
 
 import { cn } from "~/lib/utils";
 import { ArrowUpRight } from "lucide-react";
-import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
+import { ButtonLink } from "~/components/ui/button-link";
 import { Card, CardContent } from "~/components/ui/card";
 import { SitePagination } from "~/components/root/pagination";
 
@@ -233,15 +233,14 @@ const Articles = async (props: {
                         </div>
 
                         <div>
-                          <Button asChild className="px-0" variant={"link"}>
-                            <Link
-                              className="flex items-center justify-center gap-2"
-                              href={`/penelitian/${research.slug}`}
-                            >
-                              Baca sekarang
-                              <ArrowUpRight className="h-4 w-4" />
-                            </Link>
-                          </Button>
+                          <ButtonLink
+                            href={`/penelitian/${research.slug}`}
+                            className="px-0"
+                            variant={"link"}
+                          >
+                            Baca sekarang
+                            <ArrowUpRight className="ml-1 h-4 w-4" />
+                          </ButtonLink>
                         </div>
                       </div>
                     </CardContent>

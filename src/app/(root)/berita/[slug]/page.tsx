@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { db } from "~/server/db";
 import { notFound } from "next/navigation";
@@ -18,12 +17,13 @@ import {
 
 import { ChevronLeft } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
 
 import Footer from "~/components/root/footer";
 import ShareButtons from "~/components/root/share-button";
 import ShareDropdown from "~/components/root/share-dropdown";
 import RenderJsonToHtmlContent from "~/components/root/render-json-to-html-content";
+
+import { ButtonLink } from "~/components/ui/button-link";
 
 export const revalidate = 60;
 
@@ -68,8 +68,10 @@ const ArticleDetail = async (props: {
 }) => {
   const params = await props.params;
 
-  const article = await db.article.findUnique({
-    where: { slug: params.slug },
+  const article = await db.article.findFirst({
+    where: {
+      AND: [{ slug: params.slug }, { publishedDate: { not: null } }],
+    },
     include: {
       user: {
         select: {
@@ -97,12 +99,10 @@ const ArticleDetail = async (props: {
       {/* Header */}
       <section className="mt-10 grid grid-cols-1 content-center gap-5 px-5 md:grid-cols-2 lg:mt-20 lg:grid-cols-2 lg:px-20">
         <div className="flex w-full items-center justify-between md:justify-start">
-          <Button asChild variant="link" className="px-0">
-            <Link href="/berita">
-              <ChevronLeft className="mr-1 h-4 w-4" />
-              Kembali
-            </Link>
-          </Button>
+          <ButtonLink href="/berita" variant="link" className="px-0">
+            <ChevronLeft className="mr-1 h-4 w-4" />
+            Kembali
+          </ButtonLink>
 
           <ShareDropdown text={`Baca berita ${article.title}`} />
         </div>

@@ -33,7 +33,6 @@ import {
   getOperationalStartTime,
 } from "~/hooks/get-operational-day";
 
-import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { getNameInitials } from "~/hooks/get-initial-name";
 import { ChevronLeft, CircleCheck, Star } from "lucide-react";
@@ -44,6 +43,7 @@ import ShareDropdown from "~/components/root/share-dropdown";
 import LabDetailGallery from "~/components/lab-detail/gallery";
 import LabDetailServiceCarousel from "~/components/lab-detail/service";
 import FacilityDialogTrigger from "~/components/lab-detail/facility-dialog";
+import { ButtonLink } from "~/components/ui/button-link";
 
 const calculateReviewStatistics = (
   reviews: laboratoryReviewType[],
@@ -197,12 +197,10 @@ const LaboratoryDetail = async (props: {
       {/* Header */}
       <section className="mt-10 grid grid-cols-1 content-center gap-5 px-5 md:grid-cols-2 lg:mt-20 lg:grid-cols-2 lg:px-20">
         <div className="flex w-full items-center justify-between md:justify-start">
-          <Button asChild variant="ghost" className="px-0 hover:bg-transparent">
-            <Link href="/laboratorium" className="flex gap-2">
-              <ChevronLeft className="h-4 w-4" />
-              Kembali
-            </Link>
-          </Button>
+          <ButtonLink href="/laboratorium" variant="link" className="px-0">
+            <ChevronLeft className="mr-1 h-4 w-4" />
+            Kembali
+          </ButtonLink>
 
           <ShareDropdown text={laboratory.name} />
         </div>

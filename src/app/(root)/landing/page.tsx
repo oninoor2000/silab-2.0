@@ -6,9 +6,10 @@ import { unstable_cache } from "next/cache";
 
 import type { testimonialItemTypes } from "~/typeSchema/landing-page-types";
 
-import { cn } from "~/lib/utils";
 import Footer from "~/components/root/footer";
-import { Button } from "~/components/ui/button";
+
+import { cn } from "~/lib/utils";
+import { ButtonLink } from "~/components/ui/button-link";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { ArrowRight, ImageIcon, Mail, Maximize, Users } from "lucide-react";
@@ -140,9 +141,9 @@ const LandingPage = async () => {
               laboratorium yang lengkap dan modern.
             </p>
             <div className="animate-fade-right animate-delay-[1500ms] animate-duration-1000 animate-ease-in-out mt-10 flex items-center justify-start gap-5">
-              <Button asChild size="lg">
-                <Link href="/laboratorium">Sewa Laboratorium</Link>
-              </Button>
+              <ButtonLink href="/laboratorium" size="lg">
+                Sewa Laboratorium
+              </ButtonLink>
               <p className="text-sm">
                 <span className="font-semibold">10+ </span>
                 Klien puas dengan pelayanan kami
@@ -250,9 +251,9 @@ const LandingPage = async () => {
                 Konsultasikan kegiatan anda dengan staff kami untuk mendapatkan
                 laboratorium yang sesuai{" "}
               </p>
-              <Button asChild className="mt-5 w-full lg:w-max">
-                <Link href="/laboratorium">Pelajari Lebih Lanjut</Link>
-              </Button>
+              <ButtonLink href="/laboratorium" className="mt-5 w-full lg:w-max">
+                Pelajari Lebih Lanjut
+              </ButtonLink>
             </div>
           </div>
 
@@ -313,15 +314,13 @@ const LandingPage = async () => {
                         </div>
                       </div>
 
-                      <Button
-                        asChild
+                      <ButtonLink
                         variant="outline"
+                        href={`/laboratorium/${lab.slug}`}
                         className="w-full bg-transparent transition-colors duration-500 hover:bg-zinc-900 hover:text-zinc-200 dark:hover:bg-zinc-200 dark:hover:text-zinc-900 lg:w-max"
                       >
-                        <Link href={`/laboratorium/${lab.slug}`}>
-                          Lihat Lab
-                        </Link>
-                      </Button>
+                        Lihat Lab
+                      </ButtonLink>
                     </div>
                   </CardFooter>
                 </Card>
@@ -361,24 +360,22 @@ const LandingPage = async () => {
                   key={research.id}
                   className="flex flex-col justify-start gap-3 border border-zinc-200 p-5 dark:border-zinc-800"
                 >
-                  <h3 className="line-clamp-2 text-lg md:text-xl">
-                    {research.title}
-                  </h3>
+                  <Link href={`/penelitian/${research.slug}`}>
+                    <h3 className="line-clamp-2 text-lg md:text-xl">
+                      {research.title}
+                    </h3>
+                  </Link>
                   <p className="line-clamp-1 text-muted-foreground">
                     {research.abstract}
                   </p>
-                  <Button
-                    asChild
+                  <ButtonLink
+                    href={`/penelitian/${research.slug}`}
                     variant={"link"}
                     className="group flex w-min items-center gap-x-2 p-0 text-sm"
                   >
-                    <>
-                      <Link href={`/penelitian/${research.slug}`}>
-                        Pelajari Lebih Lanjut
-                      </Link>
-                      <ArrowRight className="animate-fade-right !animate-delay-0 !animate-duration-300 hidden h-5 w-5 group-hover:block" />
-                    </>
-                  </Button>
+                    Pelajari Lebih Lanjut
+                    <ArrowRight className="animate-fade-right !animate-delay-0 !animate-duration-300 hidden h-5 w-5 group-hover:block" />
+                  </ButtonLink>
                 </li>
               ))}
             </ul>
@@ -393,9 +390,13 @@ const LandingPage = async () => {
             <p className="text-center md:text-left">
               Merasa pelayanan kami kurang memuaskan?
             </p>
-            <Button asChild variant={"outline"} className="mt-3 md:w-min">
-              <Link href="/tentang-kami">Beritahu Kami</Link>
-            </Button>
+            <ButtonLink
+              href="/tentang-kami"
+              variant={"outline"}
+              className="mt-3 md:w-min"
+            >
+              Beritahu Kami
+            </ButtonLink>
           </div>
 
           <div className="flex w-full justify-center">
@@ -489,9 +490,11 @@ const LandingPage = async () => {
                       <p className="text-muted-foreground lg:text-sm">
                         {article.laboratory?.name ?? ""}
                       </p>
-                      <h3 className="mt-2 line-clamp-2 text-lg md:text-xl">
-                        {article.title}
-                      </h3>
+                      <Link href={`/berita/${article.slug}`}>
+                        <h3 className="mt-2 line-clamp-2 text-lg hover:underline md:text-xl">
+                          {article.title}
+                        </h3>
+                      </Link>
                     </div>
                   </CardContent>
                 </Card>

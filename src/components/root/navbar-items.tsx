@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import React, { useState } from "react";
+
 import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
+
+import type { Session } from "next-auth";
 import type { NavbarItem } from "~/typeSchema/landing-page-types";
 
 import {
@@ -26,11 +29,11 @@ import {
 import { cn } from "~/lib/utils";
 import { Button } from "../ui/button";
 import { ModeToggle } from "../ui/mode-toggle";
+import { ButtonLink } from "../ui/button-link";
 import { getNameInitials } from "~/hooks/get-initial-name";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { BadgeCheck, LayoutDashboard, LogOut, Menu } from "lucide-react";
-import type { Session } from "next-auth";
 
 const navbarItems: NavbarItem[] = [
   {
@@ -94,7 +97,7 @@ export const NavbarMobileSheet = ({ session }: { session: Session | null }) => {
     <>
       {session?.user.id && (
         <DropdownMenu>
-          <DropdownMenuTrigger className="ring-ring data-[state=open]:bg-accent rounded-md outline-none focus-visible:ring-2">
+          <DropdownMenuTrigger className="rounded-md outline-none ring-ring focus-visible:ring-2 data-[state=open]:bg-accent">
             <Avatar className="h-10 w-10 rounded-md border">
               <AvatarImage
                 src={session?.user?.image ?? ""}
@@ -121,7 +124,7 @@ export const NavbarMobileSheet = ({ session }: { session: Session | null }) => {
                 </Avatar>
                 <div className="grid flex-1">
                   <div className="font-medium">{session?.user.name}</div>
-                  <div className="text-muted-foreground overflow-hidden text-xs">
+                  <div className="overflow-hidden text-xs text-muted-foreground">
                     <div className="line-clamp-1">{session?.user.email}</div>
                   </div>
                 </div>
@@ -130,15 +133,15 @@ export const NavbarMobileSheet = ({ session }: { session: Session | null }) => {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <Link href="/dashboard">
-                <DropdownMenuItem className="hover:bg-secondary flex items-center gap-2 hover:cursor-pointer">
-                  <LayoutDashboard className="text-muted-foreground h-4 w-4" />
+                <DropdownMenuItem className="flex items-center gap-2 hover:cursor-pointer hover:bg-secondary">
+                  <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
                   Dashborad
                 </DropdownMenuItem>
               </Link>
 
               <Link href="/dashboard/user/akun-saya">
-                <DropdownMenuItem className="hover:bg-secondary gap-2 hover:cursor-pointer">
-                  <BadgeCheck className="text-muted-foreground h-4 w-4" />
+                <DropdownMenuItem className="gap-2 hover:cursor-pointer hover:bg-secondary">
+                  <BadgeCheck className="h-4 w-4 text-muted-foreground" />
                   Akun
                 </DropdownMenuItem>
               </Link>
@@ -151,9 +154,9 @@ export const NavbarMobileSheet = ({ session }: { session: Session | null }) => {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => signOut()}
-              className="hover:bg-secondary gap-2 hover:cursor-pointer"
+              className="gap-2 hover:cursor-pointer hover:bg-secondary"
             >
-              <LogOut className="text-muted-foreground h-4 w-4" />
+              <LogOut className="h-4 w-4 text-muted-foreground" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -171,7 +174,7 @@ export const NavbarMobileSheet = ({ session }: { session: Session | null }) => {
       </Button>
 
       <Sheet open={isSidebarSheetOpen} onOpenChange={setisSidebarSheetOpen}>
-        <SheetContent className="bg-background border-l-zinc-200 dark:border-l-zinc-900">
+        <SheetContent className="border-l-zinc-200 bg-background dark:border-l-zinc-900">
           <VisuallyHidden.Root>
             <SheetHeader>
               <SheetTitle>Sidebar</SheetTitle>
@@ -198,9 +201,9 @@ export const NavbarMobileSheet = ({ session }: { session: Session | null }) => {
 
           {!session && (
             <div className="mt-5">
-              <Button asChild variant="outline" className="w-full">
-                <Link href="/masuk">Masuk</Link>
-              </Button>
+              <ButtonLink href="/masuk" variant="outline" className="w-full">
+                Masuk
+              </ButtonLink>
             </div>
           )}
         </SheetContent>

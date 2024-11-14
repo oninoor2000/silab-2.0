@@ -14,18 +14,17 @@ import {
   DropdownMenuSeparator,
 } from "../ui/dropdown-menu";
 
-import { Button } from "../ui/button";
 import { ModeToggle } from "../ui/mode-toggle";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { NavbarItems, NavbarMobileSheet } from "./navbar-items";
-import { BadgeCheck, LayoutDashboard, LogOut } from "lucide-react";
-
+import { ButtonLink } from "../ui/button-link";
 import { getNameInitials } from "~/hooks/get-initial-name";
+import { NavbarItems, NavbarMobileSheet } from "./navbar-items";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { BadgeCheck, LayoutDashboard, LogOut } from "lucide-react";
 
 const Navbar = async () => {
   const session = await auth();
   return (
-    <section className="bg-background sticky top-0 z-20 flex items-center justify-between gap-x-5 border-b border-b-zinc-100 px-5 py-3 dark:border-b-zinc-800">
+    <section className="sticky top-0 z-20 flex items-center justify-between gap-x-5 border-b border-b-zinc-100 bg-background px-5 py-3 dark:border-b-zinc-800">
       {/* Logo */}
       <div>
         <Link href="/" className="block dark:hidden">
@@ -63,7 +62,7 @@ const Navbar = async () => {
       <div className="hidden items-center justify-end gap-4 lg:flex">
         {session ? (
           <DropdownMenu>
-            <DropdownMenuTrigger className="ring-ring data-[state=open]:bg-accent rounded-md outline-none focus-visible:ring-2">
+            <DropdownMenuTrigger className="rounded-md outline-none ring-ring focus-visible:ring-2 data-[state=open]:bg-accent">
               <Avatar className="h-10 w-10 rounded-md border">
                 <AvatarImage
                   src={session?.user?.image ?? ""}
@@ -90,7 +89,7 @@ const Navbar = async () => {
                   </Avatar>
                   <div className="grid flex-1">
                     <div className="font-medium">{session?.user.name}</div>
-                    <div className="text-muted-foreground overflow-hidden text-xs">
+                    <div className="overflow-hidden text-xs text-muted-foreground">
                       <div className="line-clamp-1">{session?.user.email}</div>
                     </div>
                   </div>
@@ -99,15 +98,15 @@ const Navbar = async () => {
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <Link href="/dashboard">
-                  <DropdownMenuItem className="hover:bg-secondary flex items-center gap-2 hover:cursor-pointer">
-                    <LayoutDashboard className="text-muted-foreground h-4 w-4" />
+                  <DropdownMenuItem className="flex items-center gap-2 hover:cursor-pointer hover:bg-secondary">
+                    <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
                     Dashborad
                   </DropdownMenuItem>
                 </Link>
 
                 <Link href="/dashboard/user/akun-saya">
-                  <DropdownMenuItem className="hover:bg-secondary gap-2 hover:cursor-pointer">
-                    <BadgeCheck className="text-muted-foreground h-4 w-4" />
+                  <DropdownMenuItem className="gap-2 hover:cursor-pointer hover:bg-secondary">
+                    <BadgeCheck className="h-4 w-4 text-muted-foreground" />
                     Akun
                   </DropdownMenuItem>
                 </Link>
@@ -119,17 +118,17 @@ const Navbar = async () => {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => signOut()}
-                className="hover:bg-secondary gap-2 hover:cursor-pointer"
+                className="gap-2 hover:cursor-pointer hover:bg-secondary"
               >
-                <LogOut className="text-muted-foreground h-4 w-4" />
+                <LogOut className="h-4 w-4 text-muted-foreground" />
                 Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <Button asChild variant="outline">
-            <Link href="/masuk">Masuk</Link>
-          </Button>
+          <ButtonLink href="/masuk" variant="outline">
+            Masuk
+          </ButtonLink>
         )}
         <ModeToggle />
       </div>

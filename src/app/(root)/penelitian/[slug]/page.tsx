@@ -19,7 +19,7 @@ import {
 import { cn } from "~/lib/utils";
 import { ChevronLeft } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
+import { ButtonLink } from "~/components/ui/button-link";
 
 import Footer from "~/components/root/footer";
 import ShareButtons from "~/components/root/share-button";
@@ -108,12 +108,10 @@ const researchDetail = async (props: {
       {/* Header */}
       <section className="mt-10 grid grid-cols-1 content-center gap-5 px-5 md:grid-cols-2 lg:mt-20 lg:grid-cols-2 lg:px-20">
         <div className="flex w-full items-center justify-between md:justify-start">
-          <Button asChild variant="link" className="px-0">
-            <Link href="/penelitian" className="flex items-center gap-1">
-              <ChevronLeft className="h-4 w-4" />
-              Kembali
-            </Link>
-          </Button>
+          <ButtonLink href="/penelitian" variant="link" className="px-0">
+            <ChevronLeft className="mr-1 h-4 w-4" />
+            Kembali
+          </ButtonLink>
 
           <ShareDropdown
             text={`Baca penelitian tentang "${research.title}" di Silab`}
