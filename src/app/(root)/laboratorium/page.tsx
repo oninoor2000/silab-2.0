@@ -5,6 +5,7 @@ import { db } from "~/server/db";
 import { Prisma } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 
+import type { Metadata } from "next";
 import type { Params, SearchParams } from "~/typeSchema/global";
 import type { laboratory } from "~/typeSchema/laboratory-page-types";
 
@@ -33,6 +34,11 @@ import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import Footer from "~/components/root/footer";
 import SortSelect from "~/components/root/sort-select";
 import SearchForm from "~/components/root/search-form";
+
+export const metadata: Metadata = {
+  title: "Laboratorium",
+  description: "Laboratorium yang bisa disewa di Jurusan Kesehatan Polije",
+};
 
 const Laboratories = async (props: {
   params: Params;

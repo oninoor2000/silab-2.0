@@ -4,6 +4,7 @@ import { db } from "~/server/db";
 import { Prisma } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 
+import type { Metadata } from "next";
 import type { Params, SearchParams } from "~/typeSchema/global";
 
 import {
@@ -26,6 +27,11 @@ import Footer from "~/components/root/footer";
 import SearchForm from "~/components/root/search-form";
 import SortSelect from "~/components/root/sort-select";
 import ResearchCarousel from "~/components/research/research-carousel";
+
+export const metadata: Metadata = {
+  title: "Penelitian",
+  description: "Pelajari riset yang kami lakukan di Jursan Kesehatan Polije",
+};
 
 const Articles = async (props: {
   params: Params;
