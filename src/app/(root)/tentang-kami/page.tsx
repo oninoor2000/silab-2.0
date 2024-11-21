@@ -32,7 +32,7 @@ const getLabsContactInfo = unstable_cache(
     return labsContactInfo;
   },
   ["labsContactInfo"],
-  { revalidate: 3600, tags: ["labsContactInfo"] },
+  { revalidate: 3600 * 24, tags: ["labsContactInfo"] },
 );
 
 const getLabsManager = unstable_cache(
@@ -61,7 +61,7 @@ const getLabsManager = unstable_cache(
     return labsManager;
   },
   ["aboutUsLabManagers"],
-  { revalidate: 3600, tags: ["aboutUsLabManagers"] },
+  { revalidate: 3600 * 24, tags: ["aboutUsLabManagers"] },
 );
 
 const AboutUs = async () => {

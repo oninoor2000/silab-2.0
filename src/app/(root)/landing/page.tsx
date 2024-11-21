@@ -17,6 +17,7 @@ import { ArrowRight, ImageIcon, Mail, Maximize, Users } from "lucide-react";
 const getLaboratories = unstable_cache(
   async () => {
     const res = await db.laboratory.findMany({
+      relationLoadStrategy: "join",
       select: {
         id: true,
         name: true,
@@ -39,11 +40,12 @@ const getLaboratories = unstable_cache(
     return labs;
   },
   ["laboratories"],
-  { revalidate: 3600, tags: ["laboratories"] },
+  { revalidate: 3600 * 24, tags: ["laboratories"] },
 );
 const getResearchs = unstable_cache(
   async () => {
     const researchs = await db.researchPortfolio.findMany({
+      relationLoadStrategy: "join",
       select: {
         id: true,
         title: true,
@@ -59,11 +61,12 @@ const getResearchs = unstable_cache(
     return researchs;
   },
   ["researchs"],
-  { revalidate: 3600, tags: ["researchs"] },
+  { revalidate: 3600 * 24, tags: ["researchs"] },
 );
 const getArticles = unstable_cache(
   async () => {
     const researchs = await db.article.findMany({
+      relationLoadStrategy: "join",
       select: {
         id: true,
         title: true,
@@ -84,7 +87,7 @@ const getArticles = unstable_cache(
     return researchs;
   },
   ["researchs"],
-  { revalidate: 3600, tags: ["researchs"] },
+  { revalidate: 3600 * 24, tags: ["researchs"] },
 );
 
 const testimonialItems: testimonialItemTypes[] = [
@@ -128,19 +131,19 @@ const LandingPage = async () => {
       <section className="bg flex min-h-screen flex-col justify-center gap-10 bg-background px-5 py-20 md:h-[calc(100vh-89px)] md:px-20 lg:flex-row lg:items-center lg:justify-between lg:py-5 lg:pr-5">
         <div className="flex basis-1/2 flex-col justify-end gap-y-10 md:h-min lg:items-start lg:justify-between">
           <div>
-            <h1 className="animate-fade-right animate-duration-1000 animate-ease-in-out font-medium">
+            <h1 className="animate-fade-right font-medium animate-duration-1000 animate-ease-in-out">
               Sistem Informasi Laboratorium
             </h1>
-            <h2 className="animate-fade-right animate-delay-500 animate-duration-1000 animate-ease-in-out mt-5 text-4xl font-medium tracking-tighter md:text-6xl">
+            <h2 className="mt-5 animate-fade-right text-4xl font-medium tracking-tighter animate-delay-500 animate-duration-1000 animate-ease-in-out md:text-6xl">
               Sewa Laboratorium Mudah dan Cepat
             </h2>
-            <p className="animate-fade-right animate-delay-1000 animate-duration-1000 animate-ease-in-out mt-5 text-muted-foreground">
+            <p className="mt-5 animate-fade-right text-muted-foreground animate-delay-1000 animate-duration-1000 animate-ease-in-out">
               Silab menyediakan platform terpadu yang memudahkan proses
               pemesanan, penggunaan, dan komunikasi dalam satu tempat. Kami
               berkomitmen untuk memberikan layanan terbaik dengan fasilitas
               laboratorium yang lengkap dan modern.
             </p>
-            <div className="animate-fade-right animate-delay-[1500ms] animate-duration-1000 animate-ease-in-out mt-10 flex items-center justify-start gap-5">
+            <div className="mt-10 flex animate-fade-right items-center justify-start gap-5 animate-delay-[1500ms] animate-duration-1000 animate-ease-in-out">
               <ButtonLink href="/laboratorium" size="lg">
                 Sewa Laboratorium
               </ButtonLink>
@@ -150,7 +153,7 @@ const LandingPage = async () => {
               </p>
             </div>
           </div>
-          <div className="animate-fade-right animate-delay-[2000ms] animate-duration-1000 animate-ease-in-out mt-12 flex w-full items-start justify-between gap-5 lg:mt-0">
+          <div className="mt-12 flex w-full animate-fade-right items-start justify-between gap-5 animate-delay-[2000ms] animate-duration-1000 animate-ease-in-out lg:mt-0">
             <div className="flex flex-col gap-2">
               <span className="text-2xl font-semibold md:text-3xl">19</span>
               <span className="text-muted-foreground">
@@ -172,7 +175,7 @@ const LandingPage = async () => {
           </div>
         </div>
 
-        <div className="animate-fade-left animate-delay-[2500ms] animate-duration-1000 animate-ease-in-out basis-1/2 overflow-hidden md:h-full">
+        <div className="basis-1/2 animate-fade-left overflow-hidden animate-delay-[2500ms] animate-duration-1000 animate-ease-in-out md:h-full">
           <Image
             src="/assets/images/static/hero.jpg"
             width={716}
@@ -374,7 +377,7 @@ const LandingPage = async () => {
                     className="group flex w-min items-center gap-x-2 p-0 text-sm"
                   >
                     Pelajari Lebih Lanjut
-                    <ArrowRight className="animate-fade-right !animate-delay-0 !animate-duration-300 hidden h-5 w-5 group-hover:block" />
+                    <ArrowRight className="hidden h-5 w-5 animate-fade-right !animate-delay-0 !animate-duration-300 group-hover:block" />
                   </ButtonLink>
                 </li>
               ))}

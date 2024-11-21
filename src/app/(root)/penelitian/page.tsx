@@ -49,6 +49,7 @@ const Articles = async (props: {
   const getResearchs = unstable_cache(
     async () => {
       const researchs = await db.researchPortfolio.findMany({
+        relationLoadStrategy: "join",
         select: {
           id: true,
           title: true,
@@ -89,12 +90,13 @@ const Articles = async (props: {
       return researchs;
     },
     ["researchs", query ?? "", sort ?? "", currentPage.toString()],
-    { revalidate: 3600, tags: ["researchs"] },
+    { revalidate: 3600 * 24, tags: ["researchs"] },
   );
 
   const getResearchHeadlines = unstable_cache(
     async () => {
       const researchHeadlines = await db.researchPortfolio.findMany({
+        relationLoadStrategy: "join",
         select: {
           id: true,
           slug: true,
@@ -128,7 +130,7 @@ const Articles = async (props: {
       return researchHeadlines;
     },
     ["researchHeadlines", query ?? "", sort ?? "", currentPage.toString()],
-    { revalidate: 3600 * 24, tags: ["researchHeadlines"] },
+    { revalidate: 3600, tags: ["researchHeadlines"] },
   );
 
   const researchs = await getResearchs();

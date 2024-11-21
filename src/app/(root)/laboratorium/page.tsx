@@ -56,6 +56,7 @@ const Laboratories = async (props: {
   const getLaboratories = unstable_cache(
     async () => {
       const res = await db.laboratory.findMany({
+        relationLoadStrategy: "join",
         select: {
           id: true,
           name: true,
@@ -81,7 +82,7 @@ const Laboratories = async (props: {
       return labs;
     },
     ["laboratories", query ?? "", sort ?? "", currentPage.toString()],
-    { revalidate: 3600, tags: ["laboratories"] },
+    { revalidate: 3600 * 24, tags: ["laboratories"] },
   );
 
   const getCountAllLabs = unstable_cache(
@@ -93,7 +94,7 @@ const Laboratories = async (props: {
       return count;
     },
     ["laboratories-count", query ?? ""],
-    { revalidate: 3600, tags: ["laboratories-count"] },
+    { revalidate: 3600 * 24, tags: ["laboratories-count"] },
   );
 
   const laboratories = await getLaboratories();
@@ -322,9 +323,16 @@ function getWhereClause(
   }
 
   return {
-    name: {
-      mode: "insensitive",
-      contains: query.trim(),
-    },
+    AND: [
+      {
+        name: {
+          mode: "insensitive",
+          contains: query.trim(),
+        },
+      },
+      {
+        isDraft: false,
+      },
+    ],
   };
 }

@@ -49,6 +49,7 @@ const Articles = async (props: {
   const getArticles = unstable_cache(
     async () => {
       const articles = await db.article.findMany({
+        relationLoadStrategy: "join",
         select: {
           id: true,
           slug: true,
@@ -69,18 +70,19 @@ const Articles = async (props: {
         where: getWhereClause(query),
         orderBy: getOrderByPrisma(sort),
         take: itemsPerPage,
-        skip: (currentPage - 1) * itemsPerPage,
+        skip: (currentPage - 1) * itemsPerPage + 3,
       });
 
       return articles;
     },
     ["articles", query ?? "", sort ?? "", currentPage.toString()],
-    { revalidate: 3600, tags: ["articles"] },
+    { revalidate: 3600 * 24, tags: ["articles"] },
   );
 
   const getArticlesHeadlines = unstable_cache(
     async () => {
       const articleHeadlines = await db.article.findMany({
+        relationLoadStrategy: "join",
         select: {
           id: true,
           slug: true,
@@ -109,7 +111,7 @@ const Articles = async (props: {
           },
         },
         orderBy: {
-          publishedDate: Prisma.SortOrder.desc,
+          publishedDate: "desc",
         },
         take: 3,
       });
@@ -117,7 +119,7 @@ const Articles = async (props: {
       return articleHeadlines;
     },
     ["articleHeadlines", query ?? "", sort ?? "", currentPage.toString()],
-    { revalidate: 3600 * 24, tags: ["articleHeadlines"] },
+    { revalidate: 3600, tags: ["articleHeadlines"] },
   );
 
   const articles = await getArticles();
