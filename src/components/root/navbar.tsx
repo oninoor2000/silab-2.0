@@ -1,8 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { auth, signOut } from "~/server/auth";
-import { SessionProvider } from "next-auth/react";
+import { auth } from "~/server/auth";
 
 import {
   DropdownMenu,
@@ -14,15 +13,18 @@ import {
   DropdownMenuSeparator,
 } from "../ui/dropdown-menu";
 
+import { getNameInitials } from "~/hooks/get-initial-name";
+import { BadgeCheck, LayoutDashboard } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+
 import { ModeToggle } from "../ui/mode-toggle";
 import { ButtonLink } from "../ui/button-link";
-import { getNameInitials } from "~/hooks/get-initial-name";
 import { NavbarItems, NavbarMobileSheet } from "./navbar-items";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { BadgeCheck, LayoutDashboard, LogOut } from "lucide-react";
+import NavbarSignOutDropdownItems from "./navbar-signout-dropdown-items";
 
 const Navbar = async () => {
   const session = await auth();
+
   return (
     <section className="sticky top-0 z-20 flex items-center justify-between gap-x-5 border-b border-b-zinc-100 bg-background px-5 py-3 dark:border-b-zinc-800">
       {/* Logo */}
@@ -111,18 +113,12 @@ const Navbar = async () => {
                   </DropdownMenuItem>
                 </Link>
                 {/* <DropdownMenuItem className="gap-2 hover:cursor-pointer hover:bg-secondary">
-                  <Bell className="h-4 w-4 text-muted-foreground" />
-                  Notifikasi
-                </DropdownMenuItem> */}
+                      <Bell className="h-4 w-4 text-muted-foreground" />
+                      Notifikasi
+                    </DropdownMenuItem> */}
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => signOut()}
-                className="gap-2 hover:cursor-pointer hover:bg-secondary"
-              >
-                <LogOut className="h-4 w-4 text-muted-foreground" />
-                Log out
-              </DropdownMenuItem>
+              <NavbarSignOutDropdownItems />
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
@@ -136,9 +132,7 @@ const Navbar = async () => {
       {/* Utils Button Mobile */}
       <div className="lg:hidden">
         <div className="flex items-center justify-center gap-5">
-          <SessionProvider>
-            <NavbarMobileSheet session={session} />
-          </SessionProvider>
+          <NavbarMobileSheet />
         </div>
       </div>
     </section>

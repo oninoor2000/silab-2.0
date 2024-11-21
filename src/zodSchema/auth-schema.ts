@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const loginFormSchema = z.object({
+export const SignInFormSchema = z.object({
   email: z
     .string()
     .email({ message: "Harap gunakan alamat email yang valid." })
@@ -12,3 +12,5 @@ export const loginFormSchema = z.object({
     .max(32, { message: "Password maksimal 32 karakter" })
     .trim(),
 });
+
+export type SignInFormType = z.infer<typeof SignInFormSchema>;

@@ -1,9 +1,9 @@
 import bcrypt from "bcryptjs";
 import { db } from "~/server/db";
 import type { Role } from "@prisma/client";
-import { loginFormSchema } from "~/zodSchema";
+import { SignInFormSchema } from "~/zodSchema";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { type DefaultSession, type NextAuthConfig } from "next-auth";
+import type { Session, DefaultSession, NextAuthConfig } from "next-auth";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -51,7 +51,7 @@ export const authConfig = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const validatedFields = loginFormSchema.safeParse(credentials);
+        const validatedFields = SignInFormSchema.safeParse(credentials);
 
         if (!validatedFields.success) {
           throw new Error("Periksa kembali kredensial anda lalu coba lagi.");
@@ -91,17 +91,43 @@ export const authConfig = {
     }),
   ],
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-        role: user.role,
-        emailVerified: !!user.emailVerified,
-        email: user.email,
-        image: user.image,
-        name: user.name,
-      },
-    }),
+    async jwt({ token, user, trigger, session }) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+        token.emailVerified = !!user.emailVerified;
+        token.email = user.email;
+        token.image = user.image;
+        token.name = user.name;
+      }
+
+      // Hanya update token jika trigger adalah "update" dan session memiliki data yang valid
+      if (
+        trigger === "update" &&
+        (session as Session)?.user?.emailVerified !== undefined
+      ) {
+        token.emailVerified = (session as Session).user.emailVerified;
+      }
+
+      return token;
+    },
+    session: ({ session, token }) => {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id as string,
+          role: token.role as Role,
+          emailVerified: !!token.emailVerified,
+          email: token.email,
+          image: token.image as string | null,
+          name: token.name,
+        },
+      };
+    },
+  },
+  pages: {
+    signIn: "/masuk",
+    verifyRequest: "/verifikasi-akun",
   },
 } satisfies NextAuthConfig;

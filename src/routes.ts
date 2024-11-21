@@ -18,7 +18,7 @@ export const publicRoutes = [
  * These routes will redirect logged in user to /
  * @type {string[]}
  */
-export const authRoutes = ["/sign-in", "/register", "/lupa-password"];
+export const authRoutes = ["/masuk", "/daftar", "/lupa-password"];
 
 /**
  * And array of api routes

@@ -3,10 +3,9 @@
 import Link from "next/link";
 import React, { useState } from "react";
 
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 
-import type { Session } from "next-auth";
 import type { NavbarItem } from "~/typeSchema/landing-page-types";
 
 import {
@@ -87,7 +86,8 @@ export const NavbarItems = () => {
   );
 };
 
-export const NavbarMobileSheet = ({ session }: { session: Session | null }) => {
+export const NavbarMobileSheet = () => {
+  const { data: session } = useSession();
   const [isSidebarSheetOpen, setisSidebarSheetOpen] = useState<boolean>(false);
   const pathname = usePathname();
   const sections = pathname.split("/");
