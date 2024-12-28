@@ -6,7 +6,7 @@ import { Prisma } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 
 import type { Metadata } from "next";
-import type { Params, SearchParams } from "~/typeSchema/global";
+import type { Params, SearchParams } from "~/typeSchema/global-types";
 import type { laboratory } from "~/typeSchema/laboratory-page-types";
 
 import {
@@ -47,11 +47,11 @@ const Laboratories = async (props: {
   const searchParams = await props.searchParams;
 
   const itemsPerPage = 6;
-  const sort = searchParams.sort;
+  const sort = searchParams.sort as string | undefined;
   const currentPage = searchParams.page
     ? parseFloat(searchParams.page.toString())
     : 1;
-  const query = searchParams.query;
+  const query = searchParams.query as string | undefined;
 
   const getLaboratories = unstable_cache(
     async () => {

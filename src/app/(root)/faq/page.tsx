@@ -1,6 +1,8 @@
 import React from "react";
 import Link from "next/link";
 
+import type { Metadata } from "next";
+
 import {
   Accordion,
   AccordionContent,
@@ -10,6 +12,12 @@ import {
 
 import { ChevronRight } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+
+export const metadata: Metadata = {
+  title: "FAQ",
+  description:
+    "Frequently Asked Questions (FAQ) untuk SILAB, sistem informasi laboratorium.",
+};
 
 export default function FAQSection() {
   const faqItems = [

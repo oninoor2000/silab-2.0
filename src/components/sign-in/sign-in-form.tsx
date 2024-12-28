@@ -1,13 +1,13 @@
 "use client";
-import Link from "next/link";
-import { useState } from "react";
 
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SignInFormSchema, type SignInFormType } from "~/zodSchema";
+import { toast } from "sonner";
 
 import { SignInAction } from "~/server/actions/sign-in-action";
+import { SignInFormSchema, type SignInFormType } from "~/zodSchema";
 
 import {
   Form,
@@ -17,13 +17,11 @@ import {
   FormMessage,
   FormControl,
 } from "../ui/form";
-
-import { toast } from "sonner";
 import { Input } from "~/components/ui/input";
 import { LoadingButton } from "../ui/loading-button";
+import { PasswordInput } from "../ui/custom/password-input";
 
 const SignInForm: React.FC = () => {
-  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const router = useRouter();
 
   const form = useForm<SignInFormType>({
@@ -34,44 +32,50 @@ const SignInForm: React.FC = () => {
     },
   });
 
+  const {
+    reset,
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = form;
+
   const onSubmit = async (data: SignInFormType) => {
-    setSubmitLoading(true);
     try {
       const result = await SignInAction(data);
 
       if (!result?.success) {
-        toast.error("Login gagal", {
-          description: result.message,
+        toast.error("Login Gagal", {
+          description: result.message || "Email atau password salah.",
         });
-        form.reset();
+        reset();
       } else {
-        toast.success("Login berhasil", {
-          description: "Anda akan diarahkan ke halaman utama",
+        toast.success("Login Berhasil", {
+          description: "Anda akan diarahkan ke halaman utama.",
         });
         router.push("/");
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Terjadi kesalahan");
-    } finally {
-      setSubmitLoading(false);
     }
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        {/* Email Field */}
         <FormField
-          control={form.control}
+          control={control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
-
+              <FormLabel htmlFor="email">Email</FormLabel>
               <FormControl>
                 <Input
+                  id="email"
                   placeholder="Masukkan email Anda"
                   type="email"
-                  disabled={submitLoading}
+                  disabled={isSubmitting}
+                  aria-label="Email"
                   {...field}
                 />
               </FormControl>
@@ -80,34 +84,41 @@ const SignInForm: React.FC = () => {
           )}
         />
 
+        {/* Password Field */}
         <FormField
-          control={form.control}
+          control={control}
           name="password"
           render={({ field }) => (
             <FormItem>
               <div className="flex items-center justify-between">
-                <FormLabel>Password</FormLabel>
-
+                <FormLabel htmlFor="password">Password</FormLabel>
                 <Link
-                  className="text-sm font-medium text-muted-foreground"
+                  className="text-sm font-medium text-muted-foreground hover:underline"
                   href="/lupa-password"
                 >
                   Lupa password?
                 </Link>
               </div>
               <FormControl>
-                <Input
+                <PasswordInput
                   placeholder="Masukkan password Anda"
-                  type="password"
-                  disabled={submitLoading}
+                  aria-label="Password"
                   {...field}
+                  disabled={isSubmitting}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <LoadingButton type="submit" loading={submitLoading} className="w-full">
+
+        {/* Submit Button */}
+        <LoadingButton
+          type="submit"
+          loading={isSubmitting}
+          disabled={isSubmitting}
+          className="w-full"
+        >
           Masuk
         </LoadingButton>
       </form>

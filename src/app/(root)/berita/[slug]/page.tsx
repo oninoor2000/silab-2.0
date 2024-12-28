@@ -3,7 +3,7 @@ import Image from "next/image";
 import { db } from "~/server/db";
 import { notFound } from "next/navigation";
 
-import type { Params, SearchParams } from "~/typeSchema/global";
+import type { Params, SearchParams } from "~/typeSchema/global-types";
 import type { articleStaticSlugType } from "~/typeSchema/article-detail-types";
 
 import {

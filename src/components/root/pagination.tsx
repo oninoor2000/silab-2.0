@@ -1,5 +1,5 @@
 import React from "react";
-import type { PaginationProps } from "~/typeSchema/root";
+import type { PaginationProps } from "~/typeSchema/root-types";
 
 import {
   Pagination,

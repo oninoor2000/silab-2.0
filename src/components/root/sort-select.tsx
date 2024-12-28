@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import type { SortSelectProps } from "~/typeSchema/root";
+import type { SortSelectProps } from "~/typeSchema/root-types";
 
 import {
   Select,

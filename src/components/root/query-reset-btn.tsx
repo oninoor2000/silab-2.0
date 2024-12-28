@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import type { QueryResetButton } from "~/typeSchema/root";
+import type { QueryResetButton } from "~/typeSchema/root-types";
 
 import { X } from "lucide-react";
 import { Button } from "../ui/button";

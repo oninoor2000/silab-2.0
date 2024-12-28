@@ -3,7 +3,7 @@ import "~/styles/text-editor.css";
 
 import React from "react";
 import { type JSONContent } from "@tiptap/core";
-import { type renderJsonToHtmlContentProps } from "~/typeSchema/root";
+import { type renderJsonToHtmlContentProps } from "~/typeSchema/root-types";
 
 import { generateHTML } from "@tiptap/html";
 

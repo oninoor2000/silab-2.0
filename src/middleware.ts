@@ -1,3 +1,5 @@
+// middleware.ts
+
 import { NextResponse } from "next/server";
 import NextAuth from "next-auth";
 import {
@@ -15,79 +17,88 @@ const { auth } = NextAuth(authConfig);
 export default auth((req) => {
   const { nextUrl } = req;
   const userSession = req.auth;
-  const isLoggedIn = !!req.auth;
+  const isLoggedIn = !!userSession;
+
+  const path = nextUrl.pathname;
 
   const isApiAuthRoute = apiAuthPrefix.some((prefix) =>
-    nextUrl.pathname.startsWith(prefix),
+    path.startsWith(prefix),
   );
 
-  // Check if the current path matches any public route or is a child of a public route
   const isPublicRoute = publicRoutes.some((route) => {
-    // Exact match
-    if (nextUrl.pathname === route) return true;
+    if (path === route) return true;
 
-    // Check if it's a dynamic route (e.g., /laboratorium/[slug])
-    // Split both paths into segments
+    // Handle dynamic routes
     const routeSegments = route.split("/").filter(Boolean);
-    const pathSegments = nextUrl.pathname.split("/").filter(Boolean);
+    const pathSegments = path.split("/").filter(Boolean);
 
-    // If the current path has fewer segments than the route, it can't be a match
     if (routeSegments.length > pathSegments.length) return false;
 
-    // Check if all segments of the route match the beginning of the path
     return routeSegments.every(
       (segment, index) => segment === pathSegments[index],
     );
   });
 
-  const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+  const isAuthRoute = authRoutes.includes(path);
 
+  // **1. API Authentication Routes**
   if (isApiAuthRoute) {
     return NextResponse.next();
   }
 
+  // **2. Authentication Routes (e.g., Sign In, Sign Up)**
   if (isAuthRoute) {
     if (isLoggedIn) {
-      return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+      return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
     return NextResponse.next();
   }
 
+  // **3. Redirect to Sign In if Not Logged In and Not a Public Route**
   if (!isLoggedIn && !isPublicRoute) {
-    return Response.redirect(new URL("/sign-in", nextUrl));
+    return NextResponse.redirect(new URL("/sign-in", nextUrl));
   }
 
-  if (nextUrl.pathname === "/") {
+  // **4. Redirect to Email Verification if Logged In but Email Not Verified**
+  if (
+    isLoggedIn &&
+    userSession.user?.emailVerified !== true &&
+    !isAuthRoute &&
+    path !== "/verifikasi-akun"
+  ) {
+    return NextResponse.redirect(new URL("/verifikasi-akun", nextUrl));
+  }
+
+  // **5. Rewrites for Root and Landing Pages**
+  if (path === "/") {
     return NextResponse.rewrite(new URL("/landing", req.url));
-  } else if (nextUrl.pathname === "/landing") {
+  } else if (path === "/landing") {
     return NextResponse.rewrite(new URL("/", req.url));
   }
 
+  // **6. Staff Restricted Routes**
   const isStaffRestrictedRoute = staffRestrictedRoutes.some((route) => {
-    // Exact match
-    if (nextUrl.pathname === route) return true;
-    // Check if the current path starts with a restricted route path
-    // This handles cases like "/dashboard/edit-lab/123"
-    return nextUrl.pathname.startsWith(route);
+    if (path === route) return true;
+    return path.startsWith(route);
   });
 
   if (isStaffRestrictedRoute && userSession?.user?.role === "USER") {
-    return Response.redirect(
+    return NextResponse.redirect(
       new URL("/dashboard/user/pemesanan-saya", nextUrl),
     );
   }
 
+  // **7. Admin Restricted Routes**
   const isAdminRestrictedRoute = adminRestrictedRoutes.some((route) => {
-    // Exact match
-    if (nextUrl.pathname === route) return true;
-    // Check if the current path starts with a restricted route path
-    return nextUrl.pathname.startsWith(route);
+    if (path === route) return true;
+    return path.startsWith(route);
   });
 
   if (isAdminRestrictedRoute && userSession?.user?.role !== "ADMIN") {
-    return Response.redirect(new URL("/dashboard", nextUrl));
+    return NextResponse.redirect(new URL("/dashboard", nextUrl));
   }
 
+  // **8. Allow Next.js to handle the request**
   return NextResponse.next();
 });
 

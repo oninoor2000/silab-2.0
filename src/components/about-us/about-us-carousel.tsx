@@ -1,62 +1,43 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import Image from "next/image";
 
-import type { Swiper as SwiperType } from "swiper";
 import type { labManagersCarouselProps } from "~/typeSchema/about-us-types";
 
 import "swiper/css";
 
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { getWindowSizeBreakpoint } from "~/hooks/get-window-size-breakpoint";
 
 const LabManagersCarousel = ({
   labManagers,
 }: {
   labManagers: labManagersCarouselProps[];
 }) => {
-  const swiperRef = useRef<SwiperType | null>(null);
-  const [slidesPerView, setSlidesPerView] = useState<number>(4);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const breakPoint = getWindowSizeBreakpoint();
-      switch (breakPoint) {
-        case "xs":
-          setSlidesPerView(1);
-          break;
-        case "sm":
-          setSlidesPerView(1);
-          break;
-        case "md":
-          setSlidesPerView(2);
-          break;
-        default:
-          setSlidesPerView(4);
-          break;
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    // Cleanup event listener on unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   return (
     <section className="mt-10 w-full px-5 lg:px-20">
       <Swiper
-        onSwiper={(swiper) => (swiperRef.current = swiper)}
         spaceBetween={20}
-        slidesPerView={slidesPerView}
         autoplay={{
           delay: 2500,
+          disableOnInteraction: false,
         }}
         modules={[Autoplay]}
         className="h-96 w-full lg:h-80"
+        breakpoints={{
+          // ketika lebar viewport >= 0px
+          0: {
+            slidesPerView: 1,
+          },
+          // ketika lebar viewport >= 768px (md)
+          768: {
+            slidesPerView: 2,
+          },
+          // ketika lebar viewport >= 1024px (lg)
+          1024: {
+            slidesPerView: 4,
+          },
+        }}
       >
         {labManagers?.map((item, index) => (
           <SwiperSlide key={index}>

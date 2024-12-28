@@ -1,5 +1,5 @@
 import React from "react";
-import type { SearchFormProps } from "~/typeSchema/root";
+import type { SearchFormProps } from "~/typeSchema/root-types";
 
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";

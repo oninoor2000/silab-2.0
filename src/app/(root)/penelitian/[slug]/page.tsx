@@ -4,7 +4,7 @@ import Image from "next/image";
 import { db } from "~/server/db";
 import { notFound } from "next/navigation";
 
-import type { Params, SearchParams } from "~/typeSchema/global";
+import type { Params, SearchParams } from "~/typeSchema/global-types";
 import type { researchStaticSlugType } from "~/typeSchema/research-detail-types";
 
 import {

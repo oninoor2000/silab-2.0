@@ -11,7 +11,7 @@ import type {
   RatingPercentages,
   ReviewStatistics,
 } from "~/typeSchema/laboratory-detail-types";
-import type { Params, SearchParams } from "~/typeSchema/global";
+import type { Params, SearchParams } from "~/typeSchema/global-types";
 
 import {
   Breadcrumb,

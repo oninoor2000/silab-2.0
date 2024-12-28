@@ -4,6 +4,8 @@ import { db } from "~/server/db";
 import { Role } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 
+import type { Metadata } from "next";
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,6 +18,12 @@ import {
 import DataTable from "~/components/ui/data-table";
 import AboutUsDtColumn from "~/components/about-us/about-us-dt-col";
 import LabManagersCarousel from "~/components/about-us/about-us-carousel";
+
+export const metadata: Metadata = {
+  title: "Tentang Kami",
+  description:
+    "Tentang Kami - SILAB, Sistem Informasi Laboratorium, adalah platform yang menyediakan informasi laboratorium untuk memudahkan pengguna dalam melakukan pemesanan laboratorium.",
+};
 
 const getLabsContactInfo = unstable_cache(
   async () => {
